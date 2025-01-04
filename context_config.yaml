@@ -1,0 +1,285 @@
+# context_config.yaml
+
+# Core Files Configuration
+core_files:
+  always:  # Always included
+    - src/main.py
+    - src/trading_system.py 
+    - src/config/base_config.py
+    - manage.py
+    - run_dashboard.py
+    - setup.py
+    - README.md
+  docker:  # Docker-related
+    - docker-compose.base.yml
+    - docker-compose.dev.yml
+    - docker-compose.prod.yml
+    - docker/dockerfile
+    - docker/dockerfile.dev
+    - docker/entrypoint.sh
+    - docker/timescaledb-init.sql
+  env:  # Environment files
+    - .env.example
+    - .env.development
+    - .env.production
+    - .env.docker.development
+    - .env.docker
+    - .env.test
+  plan:  # Master plan
+    - context-master-scheme.md
+  logs: []  # Placeholder for dynamic log files
+
+
+# Path Mappings
+path_mappings:
+  "1":  # Core Infrastructure 🎯
+    - .env*
+    - docker-compose*
+    - config/**/*.py
+    - src/config/**/*.py
+    - src/core/**/*.py
+    - tests/core/*.py
+    - tests/integration/*.py
+    - tests/infrastructure/*.py
+  "2":  # Data Pipeline & Storage 🔄
+    - config/**/*.py
+    - src/config/**/*.py
+    - src/config/config_database.py
+    - src/data/sources/**/*.py
+    - src/data/**/*.py
+    - src/data/repository.py
+    - src/data/models.py
+    - src/core/db_service.py
+    - tests/core/**/*.py
+    - tests/integration/*.py
+    - tests/infrastructure/*.py
+    - tests/utils/init_test_db.py
+  "3":  # Trading Engine 📈
+    - config/**/*.py
+    - src/config/**/*.py
+    - src/config/config_trading.py
+    - src/config/paper_trading.py
+    - src/trading_system.py
+    - src/strategies/**/*.py
+    - src/backtesting/**/*.py
+    - src/core/event_bus.py
+    - src/core/bot.py
+    - src/engines/execution/order_entry.py
+    - tests/trading/*
+    - tests/integration/test_trading_flow.py
+  "4":  # Analysis Engine 🔬
+    - .env*
+    - docker-compose*
+    - config/**/*.py
+    - src/config/**/*.py
+    - tests/core/**/*.py
+    - src/engines/**/*.py
+    - src/data/sources/interfaces.py
+    - tests/utils/**/*.py
+  "5":  # UI & Dashboard 🎨
+    - run_dashboard.py
+    - config/**/*.py
+    - src/config/**/*.py
+    - src/ui/**/*.py
+    - src/core/event_bus.py
+    - src/core/logging.py
+    - src/core/db_services.py
+    - src/data_repository.py
+    - tests/integration/test_ui_integration.py
+  "6":  # System Configuration ⚙️
+    - .env*
+    - docker-compose*
+    - config/**/*
+    - src/config/**/*.py
+    - src/config/.env
+    - src/core/**/*.py
+    - src/core/logging.py
+    - tests/core/test_config*.py
+    - tests/integration/test_config*.py
+    - tests/infrastructure/test_env*.py
+  "7":  # Development Tools 🛠️
+    - .env*
+    - docker-compose*
+    - config/**/*.py
+    - scripts/*.py
+    - src/config/**/*.py
+    - src/core/debug.py
+    - src/core/integration.py
+    - src/core/logging.py
+    - tests/**/*.py
+    - scripts/**/*.py
+    - context-creator.py
+  "8":  # Runtime Core 🚀
+    - .env*
+    - docker-compose*
+    - config/**/*.py
+    - src/config/**/*.py
+    - tests/core/**/*.py
+    - scripts/**/*.py
+  "9":  # Test Structure 🧪
+    - .env*
+    - docker-compose*
+    - config/**/*.py
+    - src/config/**/*.py
+    - tests/core/**/*.py
+    - tests/data/**/*.py
+    - tests/infrastructure/**/*.py
+    - tests/integration/**/*.py
+    - tests/trading/**/*.py
+    - tests/utils/**/*.py
+    - scripts/**/*.py
+    - context-creator.py
+  "10":  # Custom Component Selection 🔍
+    []  # Dynamically populated
+
+
+# Context Levels
+levels:
+  minimal:
+    description: Basic core files only
+    categories: [always, plan]
+    include_logs: false
+  standard:
+    description: Core files + configuration
+    categories: [always, config, plan]
+    include_logs: false
+  development:
+    description: Full development context
+    categories: [always, config, docker, env, plan]
+    include_logs: true
+    log_window: last
+  debug:
+    description: Everything including full logs
+    categories: [always, config, docker, env, plan]
+    include_logs: true
+    log_window: hour
+
+
+# Log Categories
+log_categories:
+  development:
+    - backtester_development.log
+    - decorator_test_development.log
+    - level_test_development.log
+    - test_logger_development_development.log
+  testing:
+    - database_service_testing.log
+    - decorator_test_testing.log
+    - market_data_repository_testing.log
+    - src.core.compression_manager_testing.log
+    - src.data.sources.yfinance_source_testing.log
+    - test_logger_testing_testing.log
+  production:
+    - decorator_test_production.log
+    - test_logger_production_production.log
+  database:
+    - sql_queries.log
+
+
+# Exclusion Patterns
+exclude_patterns:
+  - '*.pyc'
+  - '*/__pycache__/*'
+  - '*/.git/*'
+  - '*/.pytest_cache/*'
+  - '*/logs/*'
+  - '*/.vscode/*'
+  - '*.log'
+  - '*/venv/*'
+  - '*.tmp'
+  - '*.temp'
+
+
+
+  # System Architecture Guide
+system_architecture:
+  flows:
+    market_data:
+      path: "Source → Validation → Storage → Analysis"
+      components:
+        - data_source
+        - validator
+        - repository
+        - analyzer
+      key_considerations:
+        - Data quality and validation
+        - Processing speed optimization
+        - Storage efficiency and scaling
+    trading:
+      path: "Signal → Validation → Execution → Monitoring"
+      components:
+        - strategy
+        - risk_manager
+        - broker
+        - monitor
+      key_considerations:
+        - Risk management controls
+        - Execution speed optimization
+        - Position tracking and reconciliation
+    analysis:
+      path: "Data → Processing → Signals → Validation"
+      components:
+        - data_loader
+        - processor
+        - signal_generator
+        - validator
+      key_considerations:
+        - Analysis accuracy
+        - Performance optimization
+        - Signal quality metrics
+
+  components:
+    core:
+      dependencies:
+        - Event Bus System
+        - Configuration Manager
+        - Logging System
+      dependent_components:
+        - Trading Engine
+        - Data Pipeline
+        - UI System
+      key_files:
+        - src/core/event_bus.py
+        - src/core/bot.py
+        - src/trading_system.py
+      best_practices:
+        - Use typed events for system communication
+        - Implement comprehensive error boundaries
+        - Maintain detailed event documentation
+        - Monitor system performance metrics
+    data:
+      dependencies:
+        - Database Service
+        - Data Validation
+        - Core Configuration
+      dependent_components:
+        - Trading Engine
+        - Analysis System
+        - Dashboard
+      key_files:
+        - src/data/sources/*
+        - src/data/validation.py
+        - src/data/repository.py
+      best_practices:
+        - Validate all incoming data
+        - Implement efficient caching
+        - Monitor data quality metrics
+        - Maintain data consistency
+    trading:
+      dependencies:
+        - Data Pipeline
+        - Core Systems
+        - Risk Management
+      dependent_components:
+        - UI Dashboard
+        - Monitoring System
+        - Reporting
+      key_files:
+        - src/strategies/*
+        - src/backtesting/*
+        - src/engines/execution/*
+      best_practices:
+        - Implement robust risk controls
+        - Log all trading decisions
+        - Monitor performance metrics
+        - Validate execution accuracy
